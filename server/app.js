@@ -16,6 +16,13 @@ app.use(bodyParser.json());
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../client/build')));
 
+app.use(cors({
+  origin: 'https://javi-beta.netlify.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type']
+}));
+
+
 // Connect to SQLite database
 const dbPath = path.resolve(__dirname, 'database.db');
 let db = new sqlite3.Database(dbPath, (err) => {
