@@ -102,17 +102,32 @@ app.get('/proyectos/:id', (req, res) => {
 });
 
 
-// Ruta para actualizar la facturación estimada de un proyecto por ID
+// Ruta para obtener las llamadas agendadas de un usuario específico
+app.get('/llamadas/:userId', (req, res) => {
+  const userId = req.params.userId;
+  db.all('SELECT * FROM llamadas WHERE usuario_id = ?', [userId], (err, rows) => {
+    if (err) {
+      console.error('Error fetching llamadas:', err.message);
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ llamadas: rows });
+  });
+});
+
+
+
+// Ruta para actualizar un proyecto con detalles de la llamada agendada
 app.put('/proyectos/update/:id', (req, res) => {
-  const { facturacion_estimada } = req.body;
+  const { llamadaDetalles } = req.body;
   const id = req.params.id;
 
-  db.run(`UPDATE proyectos SET facturacion_estimada = ? WHERE id = ?`, [facturacion_estimada, id], function(err) {
-    if (err) {
-      console.error('Error updating project:', err.message);
-      return res.status(400).json({ error: err.message });
-    }
-    res.json({ changes: this.changes });
+  db.run(`UPDATE proyectos SET llamada_detalles = ? WHERE id = ?`, [llamadaDetalles, id], function(err) {
+      if (err) {
+          console.error('Error updating proyecto:', err.message);
+          return res.status(400).json({ error: err.message });
+      }
+      res.json({ changes: this.changes });
   });
 });
 
